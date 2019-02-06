@@ -1,0 +1,85 @@
+﻿@model IEnumerable<WhatSAP.Models.Activity>
+@{
+    ViewData["Title"] = "ActivityRequest";
+    Layout = "_Dashboard";
+}
+
+<h2>My activity</h2>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ActivityName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ActivityDate)
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Authorized)
+                </th>
+                <th>
+                    Active
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActivityName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActivityDate)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                @if (item.Authorized == false)
+                {
+                    <td>
+                        Pending
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        Completed
+                    </td>
+                }
+                @if (item.IsActive == true)
+                {
+                    <td>Active</td>
+                }
+                else
+                {
+                    <td>Inactive</td>
+                }
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.ActivityId" asp-controller="Activity">View Details</a> |
+                    <a asp-action="Edit" asp-route-id="@item.ActivityId" asp-controller="Activity">Edit Activity</a> |
+                    @if (item.IsActive == true)
+                    {
+                        <a asp-action="Inactive" asp-route-id="@item.ActivityId" asp-controller="Activity">Inactive this Activity</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Inactive" asp-route-id="@item.ActivityId" asp-controller="Activity">Active this Activity</a>
+
+                    }
+
+                </td>
+            </tr>
+
+            }
+        </tbody>
+    </table>
+</div>

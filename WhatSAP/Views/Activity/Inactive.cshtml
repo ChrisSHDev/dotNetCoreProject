@@ -1,0 +1,33 @@
+﻿@model WhatSAP.Models.Activity
+@{
+    ViewData["Title"] = "Inactive";
+}
+
+<h2>Inactive</h2>
+
+<form asp-action="Inactive">
+    <div class="form-group">
+        @if (Model.IsActive == true)
+        {
+            <p>Would you like to inactive this activity?</p>
+            <small>This activity will disappear on activity list</small>
+
+        }
+        else
+        {
+            <p>Would you like to active this activity?</p>
+            <small>This activity will appear on activity list</small>
+        }
+        </div>
+    <div class="form-group">
+        @if (Model.IsActive == true)
+        {
+            <input type="submit" value="Inactive" class="btn btn-danger" />
+        }
+        else
+        {
+            <input type="submit" value="Active" class="btn btn-danger" />
+
+        }
+    </div>
+</form>

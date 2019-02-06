@@ -1,0 +1,137 @@
+﻿@model WhatSAP.Models.SearchResultModel
+@{
+    List<Category> Categories = ViewData["Categories"] as List<Category>;
+}
+<html lang="en">
+
+<body>
+    <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" />
+    <script src="~/js/site.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.datepicker-me').datepicker({
+                format: 'dd-mm-yyyy',
+
+            });
+        });
+    </script>
+    <br />
+    <div class="row mb-2">
+        <div class="col-md-3">
+            <strong>Date:</strong>
+
+            <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" method="post">
+                <div class="input-group date datepicker-me" data-provide="datepicker">
+
+                    <input type="text" class="form-control mr-sm-2" asp-for="Date" placeholder="Search the date" style="width:150px">
+                    <button class="btn btn-success" type="submit" value="date">Search</button>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-3">
+            <strong> Keyword:</strong>
+            <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" method="post">
+                <p>
+                    <input class="form-control mr-sm-2" type="text" asp-for="Keyword" name="Keyword" placeholder="Search" aria-label="Search" style="width:150px">
+                    <button class="btn btn-success" type="submit" value="Search">Search</button>
+                </p>
+            </form>
+        </div>
+
+        <div class="col-md-3">
+            <strong>Price:</strong> @*TODO: Cannot get double data from here!!!!!!!!!!!!*@
+            <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" method="post">
+                <p>
+                    <input type="number" class="form-control mr-sm-2" asp-for="Price" placeholder="Price per person" style="width:150px" />
+                    <button class="btn btn-success" type="submit" value="Price">Search</button>
+                </p>
+            </form>
+        </div>
+
+        <div class="col-md-3">
+            <strong> Category:</strong>
+            <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" asp-for="CategoryId" method="post">
+                <div class="form-group">
+                    <select class="custom-select" name="CategoryId" style="width:150px">
+                        <option selected="" >Search By Category</option>
+                        @for (int i = 0; i < Categories.Count(); i++)
+                        {
+                            <option value="@Categories.ElementAt(i).CategoryId">@Categories.ElementAt(i).CategoryName</option>
+                        }
+                    </select>
+                </div>
+                <button class="btn btn-success" type="submit" value="CategoryId">Search</button>
+            </form>
+        </div>
+    </div>
+    <hr />
+
+    <main role="main" class="container">
+
+        <br />
+        <div class="row mb-2">
+
+            <div class="col-md-3">
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-content-center">
+
+                        <strong class="text-primary">Sports Class</strong>
+                    </div>
+                    <div>
+                        <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" method="post">
+                            <input type="image" class="card-img-right flex-auto d-none d-lg-block" src="~/images/activities/Sportsclass.jpg" alt="submit" value="1" asp-for="typeId" style="height:70px">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <strong class="text-primary">Lesson&Class</strong>
+                    </div>
+                    <div>
+                    <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" method="post">
+                        <input type="image" class="card-img-right flex-auto d-none d-lg-block" src="~/images/activities/Craftclass.jpg" alt="submit" value="2" asp-for="typeId" style="height:70px">
+                    </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <strong class="text-primary">Indoor activity</strong>
+                    </div>
+                    <div>
+                        <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" method="post">
+                            <input type="image" class="card-img-right flex-auto d-none d-lg-block" src="~/images/activities/Indoor.jpg" alt="submit" value="3" asp-for="typeId" style="height:70px">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <strong class="text-primary">Outdoor activity</strong>
+                    </div>
+                    <div>
+                        <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" method="post">
+                            <input type="image" class="card-img-right flex-auto d-none d-lg-block" src="~/images/activities/Outdoor.jpg" alt="submit" value="3" asp-for="typeId" style="height:70px">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (ViewBag.Search == true)
+        {
+            <partial name="~/Views/Shared/_SearchResult.cshtml" model="@Model" />
+        }
+
+    </main>
+</body>
+</html>

@@ -1,0 +1,190 @@
+﻿@model IEnumerable<WhatSAP.Models.Category>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@*Image Height = 350px*@
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="padding-top:2em;">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img class="d-block w-100" src="~/images/banners/banner1.jpg" alt="Book Club" style="height:350px">
+            <div class="carousel-caption d-none d-md-block" role="option">
+                <p>
+                    Centennial College Weekly Book Club <br />
+                    <a class="btn btn-primary" href="@Url.Action("Details", "Activity", new { id = 1 })" title="See Details">
+                        See Details
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="~/images/banners/banner2.jpg" alt="Second slide">
+            <div class="carousel-caption d-none d-md-block" role="option">
+                <p>
+                    There are powerful new features in Visual Studio for building modern web apps.
+                    <a class="btn btn-primary" href="https://go.microsoft.com/fwlink/?LinkID=525030&clcid=0x409">
+                        Learn More
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="~/images/banners/banner3.jpg" alt="Third slide">
+            <div class="carousel-caption d-none d-md-block" role="option">
+                <p>
+                    Learn how Microsoft's Azure cloud platform allows you to build, deploy, and scale web apps.
+                    <a class="btn btn-primary" href="https://go.microsoft.com/fwlink/?LinkID=525027&clcid=0x409">
+                        Learn More
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="~/images/banners/banner4.jpg" style="height:350px" alt="People gathering" />
+            <div class="carousel-caption d-none d-md-block" role="option">
+                <p>
+                    What do you love? <br />
+                    Do more of it with WhatSAP! <br />
+                    <a class="btn btn-primary" href="@Url.Action("Register", "Account")" title="register">
+                        Register Now!
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+<div class="container" style="margin:auto; width:50%; padding:10px;">
+    <hr />
+    <h2>Hot Activities</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <img class="card-img-top" src="~/images/activities/bookclub-2018-10-25.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Book Club</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a class="btn btn-primary" href="@Url.Action("Details", "Activity")" title="See Details">
+                        See Details
+                        @*TODO: Should be replaced! Calling Details method in Activity Controller by passing the activity ID*@
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card">
+                <img class="card-img-top" src="~/images/activities/aquariumtour-2018-11-01.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Aquarium Tour</h5>
+                    @*TODO: Link to Activity Details*@
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a class="btn btn-primary" href="@Url.Action("Details", "Activity")" title="See Details">
+                        See Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <ul>
+            <li>Centennial College Book Club</li>
+            <li>Theming using <a href="@Url.Action("Details", "Activity")" title="See Details">Bootstrap</a></li>
+        </ul>
+    </div>
+
+    <hr />
+    <h2>Explore by Category</h2>
+    <hr />
+
+    <div class="row">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            if (i > 0 && i % 5 == 0)
+            {
+            @:</div><div class="row">
+                <br />
+            }
+            <div class="col-md text-center">
+                <form class="form-inline my-2 my-lg-0" asp-controller="Activity" asp-action="Search" method="post">
+                    <input name="CategoryId" type="hidden" style="display:none" value="@Model.ElementAt(i).CategoryId" />
+                    <input type="image" src="~/images/categories/@(Model.ElementAt(i).CategoryId)_icon.svg" alt="Submit" width="75" height="75" value="@Model.ElementAt(i).CategoryId" />
+                    @Model.ElementAt(i).CategoryName
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+    <div class="col-md-5 p-lg-5 mx-auto my-5">
+        <h1 class="display-4 font-weight-normal">WhatSAP</h1>
+        <p class="lead font-weight-normal">Social Web Platform with a number of interesting indoor and outdoor activities</p>
+        <a class="btn btn-outline-secondary" href="#">Coming soon</a>
+    </div>
+    <div class="product-device box-shadow d-none d-md-block"></div>
+    <div class="product-device product-device-2 box-shadow d-none d-md-block"></div>
+</div>
+
+<div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
+    <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
+        <div class="my-3 py-3">
+            <h2 class="display-5">Try a new experience</h2>
+            <p class="lead">Bring new life into the world</p>
+        </div>
+        <div class="bg-light box-shadow mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;"></div>
+    </div>
+    <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+        <div class="my-3 p-3">
+            <h2 class="display-5">Explore your City</h2>
+            <p class="lead">Visit a museum, try new food with discount prices!</p>
+        </div>
+        <div class="bg-dark box-shadow mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+        </div>
+    </div>
+</div>
+
+<div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
+    <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+        <div class="my-3 p-3">
+            <h2 class="display-5">Build your Career</h2>
+            <p class="lead">Take a class, expand your network, learn languages!</p>
+        </div>
+        <div class="bg-dark box-shadow mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;"></div>
+    </div>
+    <div class="bg-primary mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
+        <div class="my-3 py-3">
+            <h2 class="display-5">Get Creative</h2>
+            <p class="lead">Watch movies, paint, write a book!</p>
+        </div>
+        <div class="bg-light box-shadow mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;"></div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+<script src="../../assets/js/vendor/holder.min.js"></script>
+<script>
+    Holder.addTheme('thumb', {
+        bg: '#55595c',
+        fg: '#eceeef',
+        text: 'Thumbnail'
+    });
+</script>

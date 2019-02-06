@@ -1,0 +1,74 @@
+﻿<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">SAVED ACTIVITIES</h1>
+    </div>
+</section>
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">   </th>
+                            <th scope="col">Activity Name</th>
+                            <th scope="col">Activity Date</th>
+                            <th scope="col" class="text-center">Number of People</th>
+                            <th scope="col" class="text-right">Price</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.Cart == null)
+                        {
+                            <tr>
+                                <td>There is no saved activities</td>
+                            </tr>
+                        }
+
+                        @foreach (var cart in ViewBag.Cart)
+                        {
+                            <tr>
+                                <td><img src="~/images/activities/@(cart.Activity.Key).jpg" style="width: 100px; height: 100px" /> </td>
+                                <td>@cart.Activity.ActivityName</td>
+                                <td>@cart.Activity.ActivityDate</td>
+                                <td><input class="form-control" type="text" value="@(cart.NumOfPeople)" /></td>
+                                <td class="text-right">@cart.Activity.Price</td>
+                                <td class="text-right"><a class="btn btn-sm btn-danger" href="@Url.Action("Remove", "Cart", new { activityId = cart.Activity.ActivityId })"><i class="fa fa-trash"></i> </a> </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Sub-Total</td>
+                            <td class="text-right">$ @ViewBag.Total</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>Total</strong></td>
+                            <td class="text-right"><strong>$ @(ViewBag.Total * 1.13)</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col mb-2">
+            <div class="row">
+                <div class="col-sm-12  col-md-6">
+                    <a class="btn btn-block btn-outline-success" href="@Url.Action("Index", "Activity")">Looking more Activities</a>
+                </div>
+                <div class="col-sm-12 col-md-6 text-right">
+                    <a class="btn btn-lg btn-block btn-success text-uppercase" asp-controller="Cart" asp-action="Checkout" asp-route-id="">Checkout</a> @*TODO: Implemented Payment*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

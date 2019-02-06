@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WhatSAP.Models.BookingViewModel>
+@{
+    ViewData["Title"] = "Booking List";
+    Layout = "_Dashboard";
+}
+
+@foreach (var booking in Model.GroupBy(x => x.Activity).Select(grp => new { Activity = grp.Key, Details = grp.ToList() }))
+{
+    <div class="card" style="width:75%; margin:10px">
+        <div class="card-body">
+            <h5 class="card-title">@booking.Activity.ActivityName</h5>
+            <h6 class="card-subtitle">@booking.Activity.ActivityDate</h6>
+            <img class="card-img" src="~/images/activities/@(booking.Activity.Key).jpg" height="200" />
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Customer Name
+                        </th>
+                        <th>
+                            Number of People
+                        </th>
+                        <th>
+                            Total Price
+                        </th>
+                        <th>
+                            Booking Date
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in booking.Details)
+                    {
+                        @if (detail.Confirmed == true)
+                        {
+                            <tr>
+                                <td>
+                                    @detail.Customer.FirstName @detail.Customer.LastName
+                                </td>
+                                <td>
+                                    @detail.NumOfPpl people
+                                </td>
+                                <td>
+                                    $ @detail.Total
+                                </td>
+                                <td>
+                                    @detail.BookingDate
+                                </td>
+                                <td>
+                                    Confirmed
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>
+                                    @detail.Customer.FirstName @detail.Customer.LastName
+                                </td>
+                                <td>
+                                    @detail.NumOfPpl people
+                                </td>
+                                <td>
+                                    $ @detail.Total
+                                </td>
+                                <td>
+                                    @detail.BookingDate
+                                </td>
+                                <td>
+                                    <a asp-controller="Client" asp-action="Confirm" asp-route-id="@detail.BookingId">Accept</a> | <a asp-controller="Client" asp-action="Reject" asp-route-id="@detail.BookingId">Reject</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

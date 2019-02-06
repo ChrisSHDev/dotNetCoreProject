@@ -1,0 +1,61 @@
+﻿@model IEnumerable<WhatSAP.Models.Activity>
+@{
+    ViewData["Title"] = "ActivitRequest";
+}
+
+<h2>ActivitRequest</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                No
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActivityName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Client)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || Model.Count() == 0)
+        {
+            <tr><td>No activity Yet!</td></tr>
+        }
+        else
+        {
+            var count = 0;
+            
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                      @(++count)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ActivityName)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClientId)
+                    </td>
+                    <td>
+                        <a asp-action="ActivityRequestDetail" asp-route-id="@item.ActivityId" asp-controller="Activity">Details</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+

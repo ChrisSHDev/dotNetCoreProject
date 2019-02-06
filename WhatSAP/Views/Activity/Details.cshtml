@@ -1,0 +1,229 @@
+﻿@model WhatSAP.Models.Activity
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Details";
+
+    var userType = "";
+    var user = "";
+    var sessionToken = 0;
+    if (HttpContextAccessor.HttpContext.Session.GetString("user") != null)
+    {
+        sessionToken = (int)HttpContextAccessor.HttpContext.Session.GetInt32("token");
+        user = HttpContextAccessor.HttpContext.Session.GetString("user");
+        userType = HttpContextAccessor.HttpContext.Session.GetString("userType");
+    }
+
+    var index = 1;
+}
+
+@*Map Css*@
+<style>
+    #map {
+        height: 600px;
+        width: 800px;
+    }
+
+    #iw-container {
+        margin-bottom: 10px;
+    }
+
+        #iw-container .iw-title {
+            font-family: 'Open Sans Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 400;
+            padding: 10px;
+            background-color: #48b5e9;
+            color: white;
+            margin: 0;
+            border-radius: 2px 2px 0 0;
+        }
+
+        #iw-container .iw-content {
+            font-size: 13px;
+            line-height: 18px;
+            font-weight: 400;
+            margin-right: 1px;
+            padding: 15px 5px 20px 15px;
+            max-height: 140px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+    .iw-content img {
+        float: right;
+        margin: 0 5px 5px 10px;
+    }
+
+    .iw-subTitle {
+        font-size: 16px;
+        font-weight: 700;
+        padding: 5px 0;
+    }
+
+    .iw-bottom-gradient {
+        position: absolute;
+        width: 326px;
+        height: 25px;
+        bottom: 10px;
+        right: 18px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        /*background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);*/
+    }
+</style>
+
+@*Container for the Activity detail page*@
+<div class="jumbotron">
+    <table class="table">
+
+        <tbody>
+            <tr>
+                <th scope="row" rowspan="2">
+                    <img style="height: 200px; width: 300px; display: block;" src="~/images/activities/@(Model.Key).jpg" alt="Card image">
+                </th>
+                <td><h2>@Model.ActivityName</h2></td>
+            </tr>
+            <tr>
+                @if (user.Equals(""))
+                {
+                    <td><a class="btn btn-warning btn-lg" asp-action="Login" asp-controller="Accounts">Please log in to enjoy our activity</a></td>
+                }
+                else
+                {
+                    <td><a class="btn btn-primary btn-lg" href="@Url.Action("Save", "Cart", new { activityId = Model.ActivityId, numberOfPpl = 1 })">SAVE</a></td>
+                    @*<td><a class="btn btn-secondary btn-lg">PAY<br /></a></td>*@
+                }
+
+            </tr>
+            <tr></tr>
+        </tbody>
+    </table>
+
+    <p class="lead">
+        Activity Date: <br />
+        @Model.ActivityDate
+    </p>
+    <p class="lead">
+        Activity Capacity:  <br />
+        @Model.Capacity
+    </p>
+
+    <hr class="my-4">
+    <h4>Activity Detail</h4>
+    <p>
+        @Model.Description
+    </p>
+
+    @*Google Map*@
+    @*<p>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11543.682307787521!2d-79.3865296!3d43.6706216!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xe2028002e7a6144a!2zQmxvb3LigJNZb25nZQ!5e0!3m2!1sen!2sca!4v1540958405917"
+                    width="800" height="600" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </p>*@
+
+    @*Google Map connected with db*@
+    <div id="map"></div>
+    <script>
+        function initMap() {
+            var center = { lat: @ViewBag.Latitude, lng: @ViewBag.Longitude };
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: center,
+                zoom: 16
+            });
+
+            //Address2 Name
+            var title = "@ViewBag.Address";
+
+            //content of the infoWindow
+            var contentString =
+                '<div id="content">' +
+                '<div id="siteNotice">' +
+                '</div>' +
+                '<h1 id="firstHeading" class="firstHeading">' + title + '</h1>' +
+                '<div id="bodyContent">' +
+                '<p><b>' + title + '</b></p>' +
+                '</div>' +
+                '</div>';
+             
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            var marker = new google.maps.Marker({
+                position: center,
+                map: map,
+                title: title
+            });
+
+            marker.addListener('click', function () {
+                infowindow.open(map, marker);
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJrDYD9WP6AYhqXoYC07B8idcHEO13rNc&callback=initMap"
+            async defer></script>
+
+    <hr/>
+    <div>
+        <h4>Leave your comment</h4>
+        <partial name="~/Views/Activity/_comment.cshtml"
+                 model="new WhatSAP.Models.Comment() {
+    ActivityId = Model.ActivityId,
+    CustomerId = sessionToken}  " />
+        @if (Model.Comment.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            Content
+                        </th>
+                        <th>
+                            User
+                        </th>
+                        <th>
+                            Rate
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Comment)
+                    {
+                    <tr>
+                        <td>
+                            @index
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Body)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Customer.Email)
+                        </td>
+                        <td>
+                            @item.Rate / 5.0
+                        </td>
+                        <td>
+                            @if (sessionToken.Equals((int)item.CustomerId) || (sessionToken.Equals(Model.ClientId) && userType.Equals("Client")))
+                            {
+                                //TODO: Should fix delete function
+                                @*<a asp-action="Delete" asp-controller="Comment" asp-route-id="@item.CommentId">Delete</a>*@
+                            }
+                        </td>
+                    </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <i>This course haven't had any comment yet</i>
+        }
+    </div>
+</div>

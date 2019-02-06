@@ -1,0 +1,87 @@
+﻿@model WhatSAP.Models.Comment
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "_comment";
+    var sessionToken = @HttpContextAccessor.HttpContext.Session.GetInt32("token");
+
+}
+<style>
+    .rate {
+        unicode-bidi: bidi-override;
+        direction: rtl;
+        font-size: 30px;
+    }
+
+        .rate span.star, .rate span.star {
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
+            display: inline-block;
+        }
+
+            .rate span.star:hover, .rate span.star:hover {
+                cursor: pointer;
+            }
+
+            .rate span.star:before, .rate span.star:before {
+                content: "★";
+                padding-right: 5px;
+                color: #BEC3C7;
+            }
+
+            .rate span.star:hover:before, .rate span.star:hover:before, .rate span.star:hover ~ span.star:before, .rate span.star:hover ~ span.star:before {
+                content: "★";
+                color: #41CAC0;
+            }
+
+            .rate span.star.active::before, .rate span.star.active::before, .rate span.star.active ~ span.star::before, .rate span.star.active ~ span.star::before {
+                color: #41cac0;
+                content: "★";
+            }
+</style>
+
+
+@if (sessionToken != null)
+{
+    <div>
+        <form asp-action="Create" method="post" asp-controller="Comment">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @*//TODO: Input validation is required*@
+            <div class="form-group">
+                <textarea asp-for="Body" class="form-control" placeholder="Add comment"></textarea>
+                <span asp-validation-for="Body" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="rate">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        var starClass = "star";
+                        if (Model.Rate == 6 - i)
+                        {
+                            starClass += " active";
+                        }
+                        <span data-value="@(6 - i)" class="@starClass"></span>
+                    }
+                </span>
+                <input asp-for="Rate" hidden="hidden" />
+                <small> Rate your experience</small>
+                <span asp-validation-for="Rate" class="text-danger"></span>
+            </div>
+            <input asp-for="ActivityId" hidden="hidden" />
+            <span class="text-danger"></span><br />
+            <input type="submit" value="Add comment" class="btn btn-primary" />
+            <input type="reset" value="Reset comment" class="btn btn-danger" />
+        </form>
+    </div>
+}
+else
+{
+    @Html.Label("You must log in to make a comment")
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/rate.js"></script>

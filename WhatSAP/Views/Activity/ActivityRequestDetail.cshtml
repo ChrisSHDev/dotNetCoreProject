@@ -1,0 +1,128 @@
+﻿@model WhatSAP.Models.Activity
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "ActivityRequestDetail";
+    var userType = "";
+    var user = "";
+    if (HttpContextAccessor.HttpContext.Session.GetString("user") != null)
+    {
+        user = HttpContextAccessor.HttpContext.Session.GetString("user");
+        userType = HttpContextAccessor.HttpContext.Session.GetString("userType");
+    }
+
+}
+
+<h2>ActivityRequestDetail</h2>
+
+
+@if (userType.Equals("Client"))
+{
+    <div>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.ActivityName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ActivityName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ActivityDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ActivityDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Authorized)
+            </dt>
+            @if (Model.Authorized.Equals(false))
+            {
+                <dd class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    <small id="fileHelp" class="form-text text-muted">We are currently checking your documents</small>
+
+                </dd>
+            }
+            <dt>
+                Download here:
+            </dt>
+            @if (!Model.RequestFormPath.Equals(null))
+            {
+                <dd>
+                    <a class="btn btn-outline-primary" href="@Model.RequestFormPath">@Model.RequestFormPath.Substring(53).Split('_')[1] </a>
+                </dd>
+            }
+            else
+            {
+                <dd>
+                    <p>No attachment here</p>
+                </dd>
+            }
+
+        </dl>
+    </div>
+    <div>
+        <a class="btn btn-primary" asp-action="ActivityRequest" asp-controller="Client" asp-route-id="@Model.ClientId">Go back</a>
+        <a class="btn btn-danger disabled" asp-controller="Activity" asp-action="delete">Remove this request</a>
+
+    </div>
+}
+else if (userType.Equals("Admin"))
+{
+    <div>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.ActivityName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ActivityName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ActivityDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ActivityDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+
+            <dt>
+                Attachments:
+            </dt>
+            @if (!(Model.RequestFormPath == null))
+            {
+                <dd>
+                    <a class="btn btn-outline-primary" href="@Model.RequestFormPath">@Model.RequestFormPath.Substring(53).Split('_')[1] </a>
+                </dd>
+            }
+            else
+            {
+                <dd>
+                    <p>No attachment here</p>
+                </dd>
+            }
+        </dl>
+    </div>
+    <div>
+        <a class="btn btn-primary"  asp-action="ConfirmAcitivity" asp-controller="Admin" asp-route-id="@Model.ActivityId">Confirm</a>
+        <a class="btn btn-danger disabled" asp-controller="Activity" asp-action="delete">Remove this request</a>
+
+    </div>
+}
+else
+{
+    <p>You are not authorized to access this page</p>
+    <a asp-action="Index" asp-controller="Home">Go back</a>
+}

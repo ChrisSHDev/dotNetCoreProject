@@ -1,0 +1,53 @@
+﻿@model WhatSAP.Models.Activity
+
+@{
+    ViewData["Title"] = "RequestForm";
+    Layout = "_Dashboard";
+}
+
+<h2>RequestForm</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RequestForm" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ActivityId" />
+            <input type="hidden" asp-for="ClientId" />
+
+
+            <div class="form-group">
+                <label asp-for="ActivityName" class="control-label"></label>
+                <input asp-for="ActivityName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" placeholder="Please describe your activity litte bit"></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActivityDate" class="control-label"></label>
+                <input asp-for="ActivityDate" type="date" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" type="number"  class="form-control" />
+
+            </div>
+            <div class="form-group">
+                <input class="form-control-file" type="file" name="file" />
+                <small id="fileHelp" class="form-text text-muted">Please include request form with your documents.</small>
+
+            </div>
+            <br/>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+        </form>
+
+
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,163 @@
+﻿@model IEnumerable<WhatSAP.Models.Activity>
+
+@{
+    ViewData["Title"] = "Index";
+    double average = 0.0;
+}
+
+@*Nav tab Bar*@
+<ul class="nav nav-pills" style="width:100%; padding:10px;">
+    <li class="nav-item disabled">
+        <a class="nav-link" href="#">Activity List</a>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Sort by</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="@Url.Action("Index", "Activity", new { sortBy = "Name" })">Name</a>
+            <a class="dropdown-item" href="@Url.Action("Index", "Activity", new { sortBy = "Date" })">Date</a>
+            <a class="dropdown-item" href="@Url.Action("Index", "Activity", new { sortBy = "Price" })">Price <img src="~/images/icons/arrow-up.svg" /></a>
+            <a class="dropdown-item" href="@Url.Action("Index", "Activity", new { sortBy = "PriceLow" })">Price <img src="~/images/icons/arrow-down.svg" /></a>
+            <a class="dropdown-item" href="@Url.Action("Index", "Activity", new { sortBy = "Rate" })">Rate <img src="~/images/icons/arrow-up.svg" /></a>
+            <a class="dropdown-item" href="@Url.Action("Index", "Activity", new { sortBy = "RateLow" })">Rate <img src="~/images/icons/arrow-down.svg" /></a>
+        </div>
+    </li>
+</ul>
+
+
+<div class="row">
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        average = 0.0;
+        if (i > 0 && i % 3 == 0)
+        {
+        @:</div><div class="row">
+            <br />
+        }
+
+        <div class="col-sm-4">
+            <div class="card">
+                <img class="card-img-top" src="~/images/activities/@(Model.ElementAt(i).Key).jpg" alt="@Model.ElementAt(i).ActivityName" style="height:200px" />
+                <div class="card-body" style="height: 250px">
+                    <h5 class="card-title">@Model.ElementAt(i).ActivityName&nbsp;</h5>
+                    <span class="badge badge-primary">@Model.ElementAt(i).Category</span>
+
+                    @if (@Model.ElementAt(i).Description.Count() <= 100)
+                    {
+                    <p class="card-text">
+                        @Model.ElementAt(i).Description <br />
+                        Price: $@Model.ElementAt(i).Price per person<br />
+                        Review:
+
+                            @foreach (Comment c in Model.ElementAt(i).Comment)
+                            {
+                                if (c.Rate == null) { average = 0; }
+                                else
+                                {
+                                    average += (double)c.Rate;
+                                }
+
+                            }
+                            @{
+                                if(average != 0)
+                                {
+                                    average /= Model.ElementAt(i).Comment.Count;
+                                }
+                            }
+                        
+
+
+                        @average / 5.0 <small>(@Model.ElementAt(i).Comment.Count)</small>
+                        <br />
+                    </p>
+                    } else
+                    {
+                    <p class="card-text">
+                        @Model.ElementAt(i).Description.Substring(0, 100)...  <br />
+                        Price: $@Model.ElementAt(i).Price per person<br />
+                        Review:
+
+                        @foreach (Comment c in Model.ElementAt(i).Comment)
+                        {
+                            if (c.Rate == null) { average = 0; }
+                            else
+                            {
+                                average += (double)c.Rate;
+                            }
+
+                        }
+                        @{
+                            if (average != 0)
+                            {
+                                average /= Model.ElementAt(i).Comment.Count;
+                            }
+                        }
+
+                        @average / 5.0 <small>(@Model.ElementAt(i).Comment.Count)</small>
+                        <br />
+                    </p>
+                    }
+
+                    <a class="btn btn-primary" href="@Url.Action("Details", "Activity", new { id = Model.ElementAt(i).ActivityId })">
+                        See Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@*Pagination*@
+<p class="pager">
+    <ul class="pagination">
+        @if (ViewBag.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", "Activity", new { page = ViewBag.PreviousPage })">&laquo;</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&laquo;</a>
+            </li>
+        }
+
+        @for (int i = ViewBag.CurrentPage; i <= ViewBag.TotalPage; i++)
+        {
+            if (i == ViewBag.CurrentPage || i == 1 || i == ViewBag.CurrentPage - 1 || i == ViewBag.CurrentPage - 2 || i == ViewBag.CurrentPage +2 || i == ViewBag.CurrentPage + 1 || i == ViewBag.TotalPage)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "Activity", new { page = i })">@i</a>
+                </li>
+                ViewBag.PreviousPageIsEllipsis = false;
+            }
+            else
+            {
+                if (ViewBag.PreviousPageIsEllipsis)
+                {
+                    continue;
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link " href="#">...</a>
+                    </li>
+                    ViewBag.PreviousPageIsEllipsis = true;
+                }
+            }
+        }
+
+        @if (ViewBag.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", "Activity" , new { page=ViewBag.NextPage })">&raquo;</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&raquo;</a>
+            </li>
+        }
+    </ul>
+</p>

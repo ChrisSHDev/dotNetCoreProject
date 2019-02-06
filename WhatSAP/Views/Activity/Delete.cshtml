@@ -1,0 +1,19 @@
+﻿@model WhatSAP.Models.Activity
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Activity</h4>
+    <hr />
+
+    <form asp-action="Delete" method="delete">
+        <input type="hidden" asp-for="ActivityId" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
